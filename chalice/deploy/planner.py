@@ -1,5 +1,6 @@
 # pylint: disable=too-many-lines
 import json
+import re
 from collections import OrderedDict
 
 from typing import List, Dict, Any, Optional, Union, Tuple, Set, cast  # noqa
@@ -319,7 +320,7 @@ class PlanStage(object):
         subscribe_varname = '%s_subscription_arn' % resource.resource_name
 
         instruction_for_topic_arn = []  # type: List[InstructionMsg]
-        if resource.topic.startswith('arn:aws:sns:'):
+        if re.match(r"^arn:aws[a-z\-]*:sns:", resource.topic):
             instruction_for_topic_arn += [
                 models.StoreValue(
                     name=topic_arn_varname,

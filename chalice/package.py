@@ -3,6 +3,7 @@
 import copy
 import json
 import os
+import re
 
 from typing import Any, Optional, Dict, List, Set, Union  # noqa
 from typing import cast
@@ -538,7 +539,7 @@ class SAMTemplateGenerator(TemplateGenerator):
         sns_cfn_name = self._register_cfn_resource_name(
             resource.resource_name)
 
-        if resource.topic.startswith('arn:aws:sns:'):
+        if re.match(r"^arn:aws[a-z\-]*:sns:", resource.topic):
             topic_arn = resource.topic  # type: Union[str, Dict[str, str]]
         else:
             topic_arn = {
