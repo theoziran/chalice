@@ -114,6 +114,7 @@ class Executor(BaseExecutor):
             value = resolved_args[0]
             parts = value.split(':')
             result = {
+                'partition': parts[1],
                 'service': parts[2],
                 'region': parts[3],
                 'account_id': parts[4],
