@@ -854,7 +854,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}'
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
                          ':${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}}]}},
         }
@@ -872,7 +872,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}'
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
                          ':${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}}]}},
         }
@@ -945,7 +945,7 @@ class TestSAMTemplate(TemplateTestBase):
                     'SourceArn': {
                         'Fn::Sub': [
                             (
-                                'arn:aws:execute-api:${AWS::Region}:${AWS::'
+                                'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::'
                                 'AccountId}:${WebsocketAPIId}/*'
                             ),
                             {'WebsocketAPIId': {'Ref': 'WebsocketAPI'}}]}},
@@ -964,8 +964,8 @@ class TestSAMTemplate(TemplateTestBase):
                     'IntegrationUri': {
                         'Fn::Sub': [
                             (
-                                'arn:aws:apigateway:${AWS::Region}:lambda:path'
-                                '/2015-03-31/functions/arn:aws:lambda:'
+                                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path'
+                                '/2015-03-31/functions/arn:${AWS::Partition}:lambda:'
                                 '${AWS::Region}:' '${AWS::AccountId}:function:'
                                 '${WebsocketHandler}/invocations'
                             ),
@@ -1160,7 +1160,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Properties': {
                     'Topic': {
                         'Fn::Sub': (
-                            'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:foo'
+                            'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:foo'
                         )
                     }
                 },
@@ -1204,7 +1204,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Properties': {
                     'Queue': {
                         'Fn::Sub': (
-                            'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:foo'
+                            'arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:foo'
                         )
                     },
                     'BatchSize': 5,

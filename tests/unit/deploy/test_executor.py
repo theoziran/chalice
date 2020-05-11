@@ -190,6 +190,7 @@ class TestExecutor(object):
             )
         ])
         assert self.executor.variables['result'] == {
+            'partition': 'aws',
             'account_id': '123',
             'region': 'us-west-2',
             'service': 'lambda'
