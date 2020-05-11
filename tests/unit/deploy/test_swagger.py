@@ -697,7 +697,7 @@ def test_will_custom_auth_with_cfn(sample_app):
             'authorizerResultTtlInSeconds': 10,
             'authorizerUri': {
                 'Fn::Sub': (
-                    'arn:aws:apigateway:${AWS::Region}:lambda:path'
+                    'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path'
                     '/2015-03-31/functions/${Auth.Arn}/invocations'
                 )
             }
