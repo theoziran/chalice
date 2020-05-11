@@ -268,7 +268,7 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}'
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
                          ':${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}},
                     ]
@@ -285,7 +285,7 @@ class SAMTemplateGenerator(TemplateGenerator):
                     'Principal': 'apigateway.amazonaws.com',
                     'SourceArn': {
                         'Fn::Sub': [
-                            ('arn:aws:execute-api:${AWS::Region}:'
+                            ('arn:${AWS::Partition}:execute-api:${AWS::Region}:'
                              '${AWS::AccountId}:${RestAPIId}/*'),
                             {'RestAPIId': {'Ref': 'RestAPI'}},
                         ]
@@ -341,8 +341,8 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'IntegrationUri': {
                     'Fn::Sub': [
                         (
-                            'arn:aws:apigateway:${AWS::Region}:lambda:path/'
-                            '2015-03-31/functions/arn:aws:lambda:'
+                            'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/'
+                            '2015-03-31/functions/arn:${AWS::Partition}:lambda:'
                             '${AWS::Region}:' '${AWS::AccountId}:function:'
                             '${WebsocketHandler}/invocations'
                         ),
@@ -363,7 +363,7 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}'
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
                          ':${WebsocketAPIId}/*'),
                         {'WebsocketAPIId': api_ref},
                     ],
@@ -543,7 +543,7 @@ class SAMTemplateGenerator(TemplateGenerator):
         else:
             topic_arn = {
                 'Fn::Sub': (
-                    'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:%s' %
+                    'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:%s' %
                     resource.topic
                 )
             }
@@ -569,7 +569,7 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Properties': {
                     'Queue': {
                         'Fn::Sub': (
-                            'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:%s' %
+                            'arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:%s' %
                             resource.queue
                         )
                     },
