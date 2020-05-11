@@ -250,7 +250,7 @@ class CFNSwaggerGenerator(SwaggerGenerator):
         # type: (Optional[str]) -> Any
         return {
             'Fn::Sub': (
-                'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31'
+                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31'
                 '/functions/${APIHandler.Arn}/invocations'
             )
         }
@@ -259,7 +259,7 @@ class CFNSwaggerGenerator(SwaggerGenerator):
         # type: (ChaliceAuthorizer) -> Any
         return {
             'Fn::Sub': (
-                'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31'
+                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31'
                 '/functions/${%s.Arn}/invocations' % to_cfn_resource_name(
                     authorizer.name)
             )
