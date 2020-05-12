@@ -727,11 +727,12 @@ class TypedAWSClient(object):
                 "Unable to find authorizer associated "
                 "with function ARN: %s" % function_arn)
         parts = function_arn.split(':')
+        partition = parts[1]
         region_name = parts[3]
         account_id = parts[4]
         function_name = parts[-1]
-        source_arn = ("arn:aws:execute-api:%s:%s:%s/authorizers/%s" %
-                      (region_name, account_id, rest_api_id, authorizer_id))
+        source_arn = ("arn:%s:execute-api:%s:%s:%s/authorizers/%s" %
+                      (partition, region_name, account_id, rest_api_id, authorizer_id))
         if random_id is None:
             random_id = self._random_id()
         self._client('lambda').add_permission(
