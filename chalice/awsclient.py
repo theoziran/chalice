@@ -655,13 +655,19 @@ class TypedAWSClient(object):
     def _build_source_arn_str(self, region_name, account_id, rest_api_id):
         # type: (str, str, str) -> str
         source_arn = (
-            'arn:aws:execute-api:'
+            'arn:{partition}:execute-api:'
             '{region_name}:{account_id}:{rest_api_id}/*').format(
+                parition=self.partition_name,
                 region_name=region_name,
                 # Assuming same account id for lambda function and API gateway.
                 account_id=account_id,
                 rest_api_id=rest_api_id)
         return source_arn
+
+    @property
+    def partition_name(self):
+        # type: () -> str
+        return self._client('sts').get_caller_identity()['Arn'].split(':')[1]
 
     @property
     def region_name(self):
@@ -853,7 +859,7 @@ class TypedAWSClient(object):
 
     def add_permission_for_s3_event(self, bucket, function_arn):
         # type: (str, str) -> None
-        bucket_arn = 'arn:aws:s3:::%s' % bucket
+        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition, bucket=bucket)
         self._add_lambda_permission_if_needed(
             source_arn=bucket_arn,
             function_arn=function_arn,
@@ -862,7 +868,7 @@ class TypedAWSClient(object):
 
     def remove_permission_for_s3_event(self, bucket, function_arn):
         # type: (str, str) -> None
-        bucket_arn = 'arn:aws:s3:::%s' % bucket
+        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition, bucket=bucket)
         self._remove_lambda_permission_if_needed(
             source_arn=bucket_arn,
             function_arn=function_arn,
@@ -1017,7 +1023,7 @@ class TypedAWSClient(object):
             arn_start, actual_name = actual_arn.rsplit(':', 1)
             return (
                 actual_name == resource_name and
-                arn_start.startswith('arn:aws:%s' % service_name) and
+                re.match("^arn:aws[a-z\\-]*:%s" % service_name, arn_start) and
                 attributes['FunctionArn'] == function_arn
             )
         except client.exceptions.ResourceNotFoundException:
