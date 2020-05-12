@@ -343,13 +343,16 @@ class PlanStage(object):
                 models.JPSearch('region',
                                 input_var='parsed_lambda_arn',
                                 output_var='region_name'),
+                models.JPSearch('partition',
+                                input_var='parsed_lambda_arn',
+                                output_var='partition'),
                 models.StoreValue(
                     name=topic_arn_varname,
                     value=StringFormat(
-                        'arn:aws:sns:{region_name}:{account_id}:%s' % (
+                        'arn:{partition}:sns:{region_name}:{account_id}:%s' % (
                             resource.topic
                         ),
-                        ['region_name', 'account_id'],
+                        ['partition', 'region_name', 'account_id'],
                     ),
                 ),
             ]
@@ -446,13 +449,16 @@ class PlanStage(object):
             models.JPSearch('region',
                             input_var='parsed_lambda_arn',
                             output_var='region_name'),
+            models.JPSearch('partition',
+                            input_var='parsed_lambda_arn',
+                            output_var='partition'),
             models.StoreValue(
                 name=queue_arn_varname,
                 value=StringFormat(
-                    'arn:aws:sqs:{region_name}:{account_id}:%s' % (
+                    'arn:{partition}:sqs:{region_name}:{account_id}:%s' % (
                         resource.queue
                     ),
-                    ['region_name', 'account_id'],
+                    ['partition', 'region_name', 'account_id'],
                 ),
             ),
         ]  # type: List[InstructionMsg]
@@ -647,11 +653,11 @@ class PlanStage(object):
                 models.StoreValue(
                     name='websocket-%s-integration-lambda-path' % key,
                     value=StringFormat(
-                        'arn:aws:apigateway:{region_name}:lambda:path/'
-                        '2015-03-31/functions/arn:aws:lambda:{region_name}:'
+                        'arn:{partition}:apigateway:{region_name}:lambda:path/'
+                        '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
                         '{account_id}:function:%s/'
                         'invocations' % config['name'],
-                        ['region_name', 'account_id'],
+                        ['partition', 'region_name', 'account_id'],
                     ),
                 ),
             )
