@@ -274,18 +274,18 @@ class TemplatedSwaggerGenerator(SwaggerGenerator):
     def _uri(self, lambda_arn=None):
         # type: (Optional[str]) -> Any
         return StringFormat(
-            'arn:aws:apigateway:{region_name}:lambda:path/2015-03-31'
+            'arn:{partition}:apigateway:{region_name}:lambda:path/2015-03-31'
             '/functions/{api_handler_lambda_arn}/invocations',
-            ['region_name', 'api_handler_lambda_arn'],
+            ['partition', 'region_name', 'api_handler_lambda_arn'],
         )
 
     def _auth_uri(self, authorizer):
         # type: (ChaliceAuthorizer) -> Any
         varname = '%s_lambda_arn' % authorizer.name
         return StringFormat(
-            'arn:aws:apigateway:{region_name}:lambda:path/2015-03-31'
+            'arn:{partition}:apigateway:{region_name}:lambda:path/2015-03-31'
             '/functions/{%s}/invocations' % varname,
-            ['region_name', varname],
+            ['partition', 'region_name', varname],
         )
 
 
