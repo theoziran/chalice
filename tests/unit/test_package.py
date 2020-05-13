@@ -411,7 +411,7 @@ class TestTerraformTemplate(TemplateTestBase):
             'Statement': [
                 {
                     'Action': 'execute-api:Invoke',
-                    'Resource': 'arn:aws:execute-api:*:*:*',
+                    'Resource': 'arn:*:execute-api:*:*:*',
                     'Effect': 'Allow',
                     'Condition': {
                         'StringEquals': {

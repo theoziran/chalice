@@ -330,7 +330,7 @@ class TestApplicationGraphBuilder(object):
                 {'Action': 'execute-api:Invoke',
                  'Effect': 'Allow',
                  'Principal': '*',
-                 'Resource': 'arn:aws:execute-api:*:*:*',
+                 'Resource': 'arn:*:execute-api:*:*:*',
                  'Condition': {
                      'StringEquals': {
                          'aws:SourceVpce': 'vpce-abc123'}}},
