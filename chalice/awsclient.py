@@ -1021,7 +1021,7 @@ class TypedAWSClient(object):
             attributes = client.get_event_source_mapping(UUID=event_uuid)
             actual_arn = attributes['EventSourceArn']
             arn_start, actual_name = actual_arn.rsplit(':', 1)
-            return (
+            return bool(
                 actual_name == resource_name and
                 re.match("^arn:aws[a-z\\-]*:%s" % service_name, arn_start) and
                 attributes['FunctionArn'] == function_arn
