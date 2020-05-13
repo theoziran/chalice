@@ -839,7 +839,8 @@ def test_templated_swagger_generator(sample_app):
         'arn:{partition}:apigateway:{region_name}:lambda:path'
         '/2015-03-31/functions/{api_handler_lambda_arn}/invocations'
     )
-    assert uri.variables == ['partition', 'region_name', 'api_handler_lambda_arn']
+    assert uri.variables == ['partition', 'region_name',
+                             'api_handler_lambda_arn']
 
 
 def test_templated_swagger_with_auth_uri(sample_app_with_auth):

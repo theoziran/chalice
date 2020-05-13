@@ -654,9 +654,9 @@ class PlanStage(object):
                     name='websocket-%s-integration-lambda-path' % key,
                     value=StringFormat(
                         'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                        '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                        '{account_id}:function:%s/'
-                        'invocations' % config['name'],
+                        '2015-03-31/functions/arn:{partition}'
+                        ':lambda:{region_name}:{account_id}:function'
+                        ':%s/invocations' % config['name'],
                         ['partition', 'region_name', 'account_id'],
                     ),
                 ),
