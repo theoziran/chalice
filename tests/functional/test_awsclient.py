@@ -1158,6 +1158,8 @@ class TestAddPermissionsForAPIGateway(object):
         lambda_stub = stubbed_session.stub('lambda')
         lambda_stub.get_policy(FunctionName='name').returns({'Policy': '{}'})
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway(
@@ -1168,6 +1170,8 @@ class TestAddPermissionsForAPIGateway(object):
         lambda_stub = stubbed_session.stub('lambda')
         lambda_stub.get_policy(FunctionName='name').returns({'Policy': '{}'})
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway(
@@ -1224,6 +1228,8 @@ class TestAddPermissionsForAPIGateway(object):
         }
         stubbed_session.stub('lambda').get_policy(
             FunctionName='name').returns({'Policy': json.dumps(policy)})
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
 
         # Because the policy above indicates that API gateway already has the
         # necessary permissions, we should not call add_permission.
@@ -1241,6 +1247,8 @@ class TestAddPermissionsForAPIGateway(object):
         lambda_stub.get_policy(FunctionName='name').raises_error(
             error_code='ResourceNotFoundException', message='Does not exist.')
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway(
@@ -1265,6 +1273,8 @@ class TestAddPermissionsForAPIGatewayV2(object):
         lambda_stub = stubbed_session.stub('lambda')
         lambda_stub.get_policy(FunctionName='name').returns({'Policy': '{}'})
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway_v2(
@@ -1275,6 +1285,8 @@ class TestAddPermissionsForAPIGatewayV2(object):
         lambda_stub = stubbed_session.stub('lambda')
         lambda_stub.get_policy(FunctionName='name').returns({'Policy': '{}'})
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway_v2(
@@ -1331,6 +1343,8 @@ class TestAddPermissionsForAPIGatewayV2(object):
         }
         stubbed_session.stub('lambda').get_policy(
             FunctionName='name').returns({'Policy': json.dumps(policy)})
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
 
         # Because the policy above indicates that API gateway already has the
         # necessary permissions, we should not call add_permission.
@@ -1348,6 +1362,8 @@ class TestAddPermissionsForAPIGatewayV2(object):
         lambda_stub.get_policy(FunctionName='name').raises_error(
             error_code='ResourceNotFoundException', message='Does not exist.')
         self.should_call_add_permission(lambda_stub)
+        sts_stub = stubbed_session.stub('sts')
+        sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
         stubbed_session.activate_stubs()
         client = TypedAWSClient(stubbed_session)
         client.add_permission_for_apigateway_v2(
@@ -1965,7 +1981,8 @@ def test_add_permission_for_s3_event(stubbed_session):
         Principal='s3.amazonaws.com',
         SourceArn='arn:aws:s3:::mybucket',
     ).returns({})
-
+    sts_stub = stubbed_session.stub('sts')
+    sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
     stubbed_session.activate_stubs()
 
     awsclient = TypedAWSClient(stubbed_session)
@@ -1994,7 +2011,8 @@ def test_skip_if_permission_already_granted_to_s3(stubbed_session):
     }
     lambda_client.get_policy(
         FunctionName='function-arn').returns({'Policy': json.dumps(policy)})
-
+    sts_stub = stubbed_session.stub('sts')
+    sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
     stubbed_session.activate_stubs()
     awsclient = TypedAWSClient(stubbed_session)
     awsclient.add_permission_for_s3_event(
@@ -2199,6 +2217,8 @@ def test_can_remove_s3_permission(stubbed_session):
     lambda_stub.remove_permission(
         FunctionName='name', StatementId='12345',
     ).returns({})
+    sts_stub = stubbed_session.stub('sts')
+    sts_stub.get_caller_identity().returns({'Arn': 'arn:aws:iam::123456789012:user/Alice'})
 
     # Because the policy above indicates that API gateway already has the
     # necessary permissions, we should not call add_permission.
