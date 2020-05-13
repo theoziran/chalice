@@ -657,7 +657,7 @@ class TypedAWSClient(object):
         source_arn = (
             'arn:{partition}:execute-api:'
             '{region_name}:{account_id}:{rest_api_id}/*').format(
-                parition=self.partition_name,
+                partition=self.partition_name,
                 region_name=region_name,
                 # Assuming same account id for lambda function and API gateway.
                 account_id=account_id,
@@ -859,7 +859,7 @@ class TypedAWSClient(object):
 
     def add_permission_for_s3_event(self, bucket, function_arn):
         # type: (str, str) -> None
-        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition, bucket=bucket)
+        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition_name, bucket=bucket)
         self._add_lambda_permission_if_needed(
             source_arn=bucket_arn,
             function_arn=function_arn,
@@ -868,7 +868,7 @@ class TypedAWSClient(object):
 
     def remove_permission_for_s3_event(self, bucket, function_arn):
         # type: (str, str) -> None
-        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition, bucket=bucket)
+        bucket_arn = 'arn:{partition}:s3:::{bucket}'.format(partition=self.partition_name, bucket=bucket)
         self._remove_lambda_permission_if_needed(
             source_arn=bucket_arn,
             function_arn=function_arn,

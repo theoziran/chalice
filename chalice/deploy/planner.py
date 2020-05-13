@@ -714,6 +714,9 @@ class PlanStage(object):
             models.JPSearch('region',
                             input_var='parsed_lambda_arn',
                             output_var='region_name'),
+            models.JPSearch('partition',
+                            input_var='parsed_lambda_arn',
+                            output_var='partition'),
         ]  # type: List[InstructionMsg]
 
         # There's also a set of instructions that are needed
@@ -857,6 +860,9 @@ class PlanStage(object):
             models.JPSearch('region',
                             input_var='parsed_lambda_arn',
                             output_var='region_name'),
+            models.JPSearch('partition',
+                            input_var='parsed_lambda_arn',
+                            output_var='partition'),
             # The swagger doc uses the 'api_handler_lambda_arn'
             # var name so we need to make sure we populate this variable
             # before importing the rest API.
