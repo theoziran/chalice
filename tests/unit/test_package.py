@@ -554,7 +554,8 @@ class TestTerraformTemplate(TemplateTestBase):
         assert template['resource']['aws_sns_topic_subscription'][
             'handler-sns-subscription'] == {
                 'topic_arn': (
-                    'arn:${data.aws_partition.chalice.partition}:sns:${data.aws_region.chalice.name}:'
+                    'arn:${data.aws_partition.chalice.partition}:sns'
+                    ':${data.aws_region.chalice.name}:'
                     '${data.aws_caller_identity.chalice.account_id}:foo'),
                 'protocol': 'lambda',
                 'endpoint': '${aws_lambda_function.handler.arn}'
@@ -603,7 +604,8 @@ class TestTerraformTemplate(TemplateTestBase):
             'aws_lambda_event_source_mapping'][
                 'handler-sqs-event-source'] == {
                     'event_source_arn': (
-                        'arn:${data.aws_partition.chalice.partition}:sqs:${data.aws_region.chalice.name}:'
+                        'arn:${data.aws_partition.chalice.partition}:sqs'
+                        ':${data.aws_region.chalice.name}:'
                         '${data.aws_caller_identity.chalice.account_id}:foo'),
                     'function_name': 'sample_app-dev-handler',
                     'batch_size': 5
@@ -854,8 +856,8 @@ class TestSAMTemplate(TemplateTestBase):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
-                         ':${RestAPIId}/*'),
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}'
+                         ':${AWS::AccountId}:${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}}]}},
         }
         assert resources['RestAPI']['Type'] == 'AWS::Serverless::Api'
@@ -872,8 +874,8 @@ class TestSAMTemplate(TemplateTestBase):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
-                         ':${RestAPIId}/*'),
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}'
+                         ':${AWS::AccountId}:${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}}]}},
         }
         # Also verify we add the expected outputs when using
@@ -945,7 +947,8 @@ class TestSAMTemplate(TemplateTestBase):
                     'SourceArn': {
                         'Fn::Sub': [
                             (
-                                'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::'
+                                'arn:${AWS::Partition}:execute-api'
+                                ':${AWS::Region}:${AWS::'
                                 'AccountId}:${WebsocketAPIId}/*'
                             ),
                             {'WebsocketAPIId': {'Ref': 'WebsocketAPI'}}]}},
@@ -964,10 +967,11 @@ class TestSAMTemplate(TemplateTestBase):
                     'IntegrationUri': {
                         'Fn::Sub': [
                             (
-                                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path'
-                                '/2015-03-31/functions/arn:${AWS::Partition}:lambda:'
-                                '${AWS::Region}:' '${AWS::AccountId}:function:'
-                                '${WebsocketHandler}/invocations'
+                                'arn:${AWS::Partition}:apigateway'
+                                ':${AWS::Region}:lambda:path'
+                                '/2015-03-31/functions/arn:${AWS::Partition}'
+                                ':lambda:${AWS::Region}:${AWS::AccountId}'
+                                ':function:${WebsocketHandler}/invocations'
                             ),
                             {'WebsocketHandler': {'Ref': handler}}
                         ],
@@ -1160,7 +1164,8 @@ class TestSAMTemplate(TemplateTestBase):
                 'Properties': {
                     'Topic': {
                         'Fn::Sub': (
-                            'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:foo'
+                            'arn:${AWS::Partition}:sns:${AWS::Region}'
+                            ':${AWS::AccountId}:foo'
                         )
                     }
                 },
@@ -1204,7 +1209,8 @@ class TestSAMTemplate(TemplateTestBase):
                 'Properties': {
                     'Queue': {
                         'Fn::Sub': (
-                            'arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:foo'
+                            'arn:${AWS::Partition}:sqs:${AWS::Region}'
+                            ':${AWS::AccountId}:foo'
                         )
                     },
                     'BatchSize': 5,

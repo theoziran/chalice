@@ -269,8 +269,8 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
-                         ':${RestAPIId}/*'),
+                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}'
+                         ':${AWS::AccountId}:${RestAPIId}/*'),
                         {'RestAPIId': {'Ref': 'RestAPI'}},
                     ]
                 },
@@ -286,8 +286,9 @@ class SAMTemplateGenerator(TemplateGenerator):
                     'Principal': 'apigateway.amazonaws.com',
                     'SourceArn': {
                         'Fn::Sub': [
-                            ('arn:${AWS::Partition}:execute-api:${AWS::Region}:'
-                             '${AWS::AccountId}:${RestAPIId}/*'),
+                            ('arn:${AWS::Partition}:execute-api'
+                             ':${AWS::Region}:${AWS::AccountId}'
+                             ':${RestAPIId}/*'),
                             {'RestAPIId': {'Ref': 'RestAPI'}},
                         ]
                     },
@@ -342,10 +343,11 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'IntegrationUri': {
                     'Fn::Sub': [
                         (
-                            'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/'
-                            '2015-03-31/functions/arn:${AWS::Partition}:lambda:'
-                            '${AWS::Region}:' '${AWS::AccountId}:function:'
-                            '${WebsocketHandler}/invocations'
+                            'arn:${AWS::Partition}:apigateway:${AWS::Region}'
+                            ':lambda:path/2015-03-31/functions/arn'
+                            ':${AWS::Partition}:lambda:${AWS::Region}'
+                            ':${AWS::AccountId}:function'
+                            ':${WebsocketHandler}/invocations'
                         ),
                         {'WebsocketHandler': {'Ref': websocket_handler}}
                     ],
@@ -364,7 +366,8 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Principal': 'apigateway.amazonaws.com',
                 'SourceArn': {
                     'Fn::Sub': [
-                        ('arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}'
+                        ('arn:${AWS::Partition}:execute-api'
+                         ':${AWS::Region}:${AWS::AccountId}'
                          ':${WebsocketAPIId}/*'),
                         {'WebsocketAPIId': api_ref},
                     ],
@@ -544,7 +547,8 @@ class SAMTemplateGenerator(TemplateGenerator):
         else:
             topic_arn = {
                 'Fn::Sub': (
-                    'arn:${AWS::Partition}:sns:${AWS::Region}:${AWS::AccountId}:%s' %
+                    'arn:${AWS::Partition}:sns'
+                    ':${AWS::Region}:${AWS::AccountId}:%s' %
                     resource.topic
                 )
             }
@@ -570,7 +574,8 @@ class SAMTemplateGenerator(TemplateGenerator):
                 'Properties': {
                     'Queue': {
                         'Fn::Sub': (
-                            'arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:%s' %
+                            'arn:${AWS::Partition}:sqs:${AWS::Region}'
+                            ':${AWS::AccountId}:%s' %
                             resource.queue
                         )
                     },
@@ -708,7 +713,8 @@ class TerraformGenerator(TemplateGenerator):
         template['resource'].setdefault('aws_lambda_event_source_mapping', {})[
             resource.resource_name] = {
                 'event_source_arn': self._arnref(
-                    "arn:%(partition)s:sqs:%(region)s:%(account_id)s:%(queue)s",
+                    "arn:%(partition)s:sqs:%(region)s"
+                    ":%(account_id)s:%(queue)s",
                     queue=resource.queue),
                 'batch_size': resource.batch_size,
                 'function_name': resource.lambda_function.function_name,

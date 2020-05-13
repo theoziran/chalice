@@ -175,7 +175,8 @@ class SwaggerGenerator(object):
         partition = lambda_arn.split(':')[1]
         return ('arn:{partition}:apigateway:{region}:lambda:path/2015-03-31'
                 '/functions/{lambda_arn}/invocations').format(
-                    partition=partition, region=self._region, lambda_arn=lambda_arn)
+                    partition=partition, region=self._region,
+                    lambda_arn=lambda_arn)
 
     def _generate_apig_integ(self, view):
         # type: (RouteEntry) -> Dict[str, Any]
@@ -251,7 +252,8 @@ class CFNSwaggerGenerator(SwaggerGenerator):
         # type: (Optional[str]) -> Any
         return {
             'Fn::Sub': (
-                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31'
+                'arn:${AWS::Partition}:apigateway:${AWS::Region}'
+                ':lambda:path/2015-03-31'
                 '/functions/${APIHandler.Arn}/invocations'
             )
         }
@@ -260,7 +262,8 @@ class CFNSwaggerGenerator(SwaggerGenerator):
         # type: (ChaliceAuthorizer) -> Any
         return {
             'Fn::Sub': (
-                'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31'
+                'arn:${AWS::Partition}:apigateway:${AWS::Region}'
+                ':lambda:path/2015-03-31'
                 '/functions/${%s.Arn}/invocations' % to_cfn_resource_name(
                     authorizer.name)
             )

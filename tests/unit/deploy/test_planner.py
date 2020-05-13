@@ -615,8 +615,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-connect-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_connect',
                     ['partition', 'region_name', 'account_id'],
                 ),
@@ -635,8 +635,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-message-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_message',
                     ['partition', 'region_name', 'account_id'],
                 ),
@@ -655,8 +655,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-disconnect-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_disconnect',
                     ['partition', 'region_name', 'account_id'],
                 ),
@@ -805,8 +805,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-connect-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_connect',
                     ['partition', 'region_name', 'account_id'],
                 ),
@@ -825,8 +825,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-message-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_message',
                     ['partition', 'region_name', 'account_id'],
                 ),
@@ -845,8 +845,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket-disconnect-integration-lambda-path',
                 value=StringFormat(
                     'arn:{partition}:apigateway:{region_name}:lambda:path/'
-                    '2015-03-31/functions/arn:{partition}:lambda:{region_name}:'
-                    '{account_id}:function:%s/'
+                    '2015-03-31/functions/arn:{partition}:lambda'
+                    ':{region_name}:{account_id}:function:%s/'
                     'invocations' % 'appname-dev-function_name_disconnect',
                     ['partition', 'region_name', 'account_id'],
                 ),
