@@ -189,7 +189,7 @@ def test_can_write_swagger_model(runner):
                                 }
                             },
                             "uri": (
-                                "arn:aws:apigateway:{region_name}:lambda:"
+                                "arn:{partition}:apigateway:{region_name}:lambda:"
                                 "path/2015-03-31/functions/"
                                 "{api_handler_lambda_arn}/invocations"
                             ),
