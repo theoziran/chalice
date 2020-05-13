@@ -172,9 +172,10 @@ class SwaggerGenerator(object):
         # type: (Optional[str]) -> Any
         if lambda_arn is None:
             lambda_arn = self._deployed_resources['api_handler_arn']
-        return ('arn:aws:apigateway:{region}:lambda:path/2015-03-31'
+        partition = lambda_arn.split(':')[1]
+        return ('arn:{partition}:apigateway:{region}:lambda:path/2015-03-31'
                 '/functions/{lambda_arn}/invocations').format(
-                    region=self._region, lambda_arn=lambda_arn)
+                    partition=partition, region=self._region, lambda_arn=lambda_arn)
 
     def _generate_apig_integ(self, view):
         # type: (RouteEntry) -> Dict[str, Any]
