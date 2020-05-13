@@ -609,6 +609,7 @@ class TerraformGenerator(TemplateGenerator):
             },
             'data': {
                 'aws_caller_identity': {'chalice': {}},
+                'aws_partition': {'chalice': {}},
                 'aws_region': {'chalice': {}},
                 'null_data_source': {
                     'chalice': {
@@ -633,6 +634,7 @@ class TerraformGenerator(TemplateGenerator):
     def _arnref(self, arn_template, **kw):
         # type: (str, str) -> str
         d = dict(
+            partition='${data.aws_partition.chalice.partition}',
             region='${data.aws_region.chalice.name}',
             account_id='${data.aws_caller_identity.chalice.account_id}')
         d.update(kw)
@@ -698,7 +700,7 @@ class TerraformGenerator(TemplateGenerator):
                 'action': 'lambda:InvokeFunction',
                 'function_name': resource.lambda_function.function_name,
                 'principal': 's3.amazonaws.com',
-                'source_arn': 'arn:aws:s3:::%s' % resource.bucket
+                'source_arn': 'arn:*:s3:::%s' % resource.bucket
         }
 
     def _generate_sqseventsource(self, resource, template):
@@ -706,7 +708,7 @@ class TerraformGenerator(TemplateGenerator):
         template['resource'].setdefault('aws_lambda_event_source_mapping', {})[
             resource.resource_name] = {
                 'event_source_arn': self._arnref(
-                    "arn:aws:sqs:%(region)s:%(account_id)s:%(queue)s",
+                    "arn:%(partition)s:sqs:%(region)s:%(account_id)s:%(queue)s",
                     queue=resource.queue),
                 'batch_size': resource.batch_size,
                 'function_name': resource.lambda_function.function_name,
@@ -719,7 +721,7 @@ class TerraformGenerator(TemplateGenerator):
             topic_arn = resource.topic
         else:
             topic_arn = self._arnref(
-                'arn:aws:sns:%(region)s:%(account_id)s:%(topic)s',
+                'arn:%(partition)s:sns:%(region)s:%(account_id)s:%(topic)s',
                 topic=resource.topic)
 
         template['resource'].setdefault('aws_sns_topic_subscription', {})[

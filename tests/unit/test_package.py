@@ -525,7 +525,7 @@ class TestTerraformTemplate(TemplateTestBase):
                 'action': 'lambda:InvokeFunction',
                 'function_name': 'sample_app-dev-handler',
                 'principal': 's3.amazonaws.com',
-                'source_arn': 'arn:aws:s3:::foo',
+                'source_arn': 'arn:*:s3:::foo',
                 'statement_id': 'handler-s3event'
         }
 
@@ -554,7 +554,7 @@ class TestTerraformTemplate(TemplateTestBase):
         assert template['resource']['aws_sns_topic_subscription'][
             'handler-sns-subscription'] == {
                 'topic_arn': (
-                    'arn:aws:sns:${data.aws_region.chalice.name}:'
+                    'arn:${data.aws_partition.chalice.partition}:sns:${data.aws_region.chalice.name}:'
                     '${data.aws_caller_identity.chalice.account_id}:foo'),
                 'protocol': 'lambda',
                 'endpoint': '${aws_lambda_function.handler.arn}'
@@ -603,7 +603,7 @@ class TestTerraformTemplate(TemplateTestBase):
             'aws_lambda_event_source_mapping'][
                 'handler-sqs-event-source'] == {
                     'event_source_arn': (
-                        'arn:aws:sqs:${data.aws_region.chalice.name}:'
+                        'arn:${data.aws_partition.chalice.partition}:sqs:${data.aws_region.chalice.name}:'
                         '${data.aws_caller_identity.chalice.account_id}:foo'),
                     'function_name': 'sample_app-dev-handler',
                     'batch_size': 5
