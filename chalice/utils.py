@@ -115,27 +115,55 @@ def create_resolver():
 
 
 def resolve_endpoint(service, region):
-    # type: (str, str) -> OrderedDict[str, Any]
+    # type: (str, str) -> Union[OrderedDict[str, Any], None]
     """Find details of an endpoint based on the service and region
 
     This utilizes the botocore EndpointResolver in order to find details on
-    the given service and region combination
+    the given service and region combination.  If the service and region
+    combination is not found the None will be returned.
 
     """
     return create_resolver().construct_endpoint(service, region)
 
 
 def endpoint_from_arn(arn):
-    # type: (str) -> OrderedDict[str, Any]
+    # type: (str) -> Union[OrderedDict[str, Any], None]
     """Find details for the endpoint associated with a resource ARN
 
     This allows the an endpoint to be discerned based on an ARN.  This
     is a convenience method due to the need to parse multiple ARNs
-    throughout the project
+    throughout the project. If the service and region combination
+    is not found the None will be returned.
 
     """
     arn_split = arn.split(':')
     return resolve_endpoint(arn_split[2], arn_split[3])
+
+
+def endpoint_dns_suffix(service, region):
+    # type: (str, str) -> str
+    """Discover the dns suffix for a given service and region combination
+
+    This allows the service DNS suffix to be discoverable throughout the
+    framework.  If the ARN's service and region combination is not found
+    then amazonaws.com is returned.
+
+    """
+    endpoint = resolve_endpoint(service, region)
+    return endpoint['dnsSuffix'] if endpoint else 'amazonaws.com'
+
+
+def endpoint_dns_suffix_from_arn(arn):
+    # type: (str) -> str
+    """Discover the dns suffix for a given ARN
+
+    This allows the service DNS suffix to be discoverable throughout the
+    framework based on the ARN.  If the ARN's service and region
+    combination is not found then amazonaws.com is returned.
+
+    """
+    endpoint = endpoint_from_arn(arn)
+    return endpoint['dnsSuffix'] if endpoint else 'amazonaws.com'
 
 
 class ChaliceZipFile(zipfile.ZipFile):
