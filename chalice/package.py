@@ -513,6 +513,9 @@ class SAMTemplateGenerator(TemplateGenerator):
         # type: (models.ManagedIAMRole, Dict[str, Any]) -> None
         role_cfn_name = self._register_cfn_resource_name(
             resource.resource_name)
+        resource.trust_policy['Statement'][0]['Principal']['Service'] = {
+            'Fn::Sub': 'lambda.${AWS::URLSuffix}'
+        }
         template['Resources'][role_cfn_name] = {
             'Type': 'AWS::IAM::Role',
             'Properties': {
@@ -647,6 +650,10 @@ class TerraformGenerator(TemplateGenerator):
 
     def _generate_managediamrole(self, resource, template):
         # type: (models.ManagedIAMRole, Dict[str, Any]) -> None
+
+        resource.trust_policy['Statement'][0]['Principal']['Service'] = \
+            "lambda.${data.aws_partition.chalice.dns_suffix}"
+
         template['resource'].setdefault('aws_iam_role', {})[
             resource.resource_name] = {
                 'name': resource.role_name,
