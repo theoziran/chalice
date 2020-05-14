@@ -626,7 +626,6 @@ class TestTerraformTemplate(TemplateTestBase):
 
 
 class TestSAMTemplate(TemplateTestBase):
-
     template_gen_factory = package.SAMTemplateGenerator
 
     def test_sam_generates_sam_template_basic(self, sample_app):
@@ -934,8 +933,7 @@ class TestSAMTemplate(TemplateTestBase):
                                ('WebsocketMessage', '$default'),
                                ('WebsocketDisconnect', '$disconnect'),):
             # Lambda function should be created.
-            assert resources[handler][
-                'Type'] == 'AWS::Serverless::Function'
+            assert resources[handler]['Type'] == 'AWS::Serverless::Function'
 
             # Along with permission to invoke from API Gateway.
             assert resources['%sInvokePermission' % handler] == {
@@ -1078,6 +1076,16 @@ class TestSAMTemplate(TemplateTestBase):
             {'PolicyName': 'DefaultRolePolicy',
              'PolicyDocument': {'iam': 'policy'}}
         ]
+        # Verify the trust policy is specific to the region
+        assert cfn_role['Properties']['AssumeRolePolicyDocument'] == {
+            'Statement': [{'Action': 'sts:AssumeRole',
+                           'Effect': 'Allow',
+                           'Principal': {
+                               'Service': {'Fn::Sub':
+                                               'lambda.${AWS::URLSuffix}'}},
+                           'Sid': ''}],
+            'Version': '2012-10-17'}
+
         # Ensure the RoleName is not in the resource properties
         # so we don't require CAPABILITY_NAMED_IAM.
         assert 'RoleName' not in cfn_role['Properties']

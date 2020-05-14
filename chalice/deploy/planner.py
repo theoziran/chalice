@@ -267,10 +267,14 @@ class PlanStage(object):
         varname = '%s_role_arn' % resource.role_name
         if not role_exists:
             return [
+                # TODO: Discover Region, Partition and URLSuffix
+                # BultInFunction
+                # JPSearch
+                # StoreValue
                 (models.APICall(
                     method_name='create_role',
                     params={'name': resource.role_name,
-                            'trust_policy': resource.trust_policy,
+                            'trust_policy': resource.trust_policy, # TODO: use Variable(
                             'policy': document},
                     output_var=varname,
                 ), "Creating IAM role: %s\n" % resource.role_name),
