@@ -10,14 +10,18 @@ import sys
 import tarfile
 import subprocess
 
+
 import click
+from collections import OrderedDict # noqa
 from typing import IO, Dict, List, Any, Tuple, Iterator, BinaryIO, Text  # noqa
 from typing import Optional, Union  # noqa
 from typing import MutableMapping  # noqa
 from typing import cast  # noqa
 
-from chalice.constants import WELCOME_PROMPT
+from botocore.loaders import create_loader
+from botocore.regions import EndpointResolver
 
+from chalice.constants import WELCOME_PROMPT
 
 OptInt = Optional[int]
 OptStr = Optional[str]
@@ -95,6 +99,43 @@ def serialize_to_json(data):
 
     """
     return json.dumps(data, indent=2, separators=(',', ': ')) + '\n'
+
+
+def create_resolver():
+    # type: () -> EndpointResolver
+    """Establish an EndpointResolver via botocore standards
+
+    This allows the dns suffix for the different regions and partitions to be
+    discovered throughout the chalice microframework
+
+    """
+    loader = create_loader('data_loader')
+    endpoints = loader.load_data('endpoints')
+    return EndpointResolver(endpoints)
+
+
+def resolve_endpoint(service, region):
+    # type: (str, str) -> OrderedDict[str, Any]
+    """Find details of an endpoint based on the service and region
+
+    This utilizes the botocore EndpointResolver in order to find details on
+    the given service and region combination
+
+    """
+    return create_resolver().construct_endpoint(service, region)
+
+
+def endpoint_from_arn(arn):
+    # type: (str) -> OrderedDict[str, Any]
+    """Find details for the endpoint associated with a resource ARN
+
+    This allows the an endpoint to be discerned based on an ARN.  This
+    is a convenience method due to the need to parse multiple ARNs
+    throughout the project
+
+    """
+    arn_split = arn.split(':')
+    return resolve_endpoint(arn_split[2], arn_split[3])
 
 
 class ChaliceZipFile(zipfile.ZipFile):

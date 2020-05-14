@@ -1,16 +1,18 @@
 import os
 import re
-import mock
+import string
 import sys
+from collections import OrderedDict
 
 import click
+import mock
 import pytest
-from six import StringIO
-from hypothesis.strategies import text
 from hypothesis import given
-import string
+from hypothesis.strategies import text
+from six import StringIO
 
 from chalice import utils
+from chalice.utils import resolve_endpoint, endpoint_from_arn
 
 
 class TestUI(object):
@@ -130,3 +132,47 @@ def test_to_cfn_resource_name_properties(name):
         pass
     else:
         assert re.search('[^A-Za-z0-9]', result) is None
+
+
+@pytest.mark.parametrize('service,region,endpoint', [
+    ('sns', 'us-east-1',
+     OrderedDict([('partition', 'aws'),
+                  ('endpointName', 'us-east-1'),
+                  ('protocols', ['http', 'https']),
+                  ('hostname', 'sns.us-east-1.amazonaws.com'),
+                  ('signatureVersions', ['v4']),
+                  ('dnsSuffix', 'amazonaws.com')])),
+    ('sqs', 'cn-north-1',
+     OrderedDict([('partition', 'aws-cn'),
+                  ('endpointName', 'cn-north-1'),
+                  ('protocols', ['http', 'https']),
+                  ('sslCommonName', 'cn-north-1.queue.amazonaws.com.cn'),
+                  ('hostname', 'sqs.cn-north-1.amazonaws.com.cn'),
+                  ('signatureVersions', ['v4']),
+                  ('dnsSuffix', 'amazonaws.com.cn')])),
+    ('dynamodb', 'mars-west-1', None)
+])
+def test_resolve_endpoint(service, region, endpoint):
+    assert endpoint == resolve_endpoint(service, region)
+
+
+@pytest.mark.parametrize('arn,endpoint', [
+    ('arn:aws:sns:us-east-1:123456:MyTopic',
+     OrderedDict([('partition', 'aws'),
+                  ('endpointName', 'us-east-1'),
+                  ('protocols', ['http', 'https']),
+                  ('hostname', 'sns.us-east-1.amazonaws.com'),
+                  ('signatureVersions', ['v4']),
+                  ('dnsSuffix', 'amazonaws.com')])),
+    ('arn:aws-cn:sqs:cn-north-1:444455556666:queue1',
+     OrderedDict([('partition', 'aws-cn'),
+                  ('endpointName', 'cn-north-1'),
+                  ('protocols', ['http', 'https']),
+                  ('sslCommonName', 'cn-north-1.queue.amazonaws.com.cn'),
+                  ('hostname', 'sqs.cn-north-1.amazonaws.com.cn'),
+                  ('signatureVersions', ['v4']),
+                  ('dnsSuffix', 'amazonaws.com.cn')])),
+    ('arn:aws:dynamodb:mars-west-1:123456:table/MyTable', None)
+])
+def test_endpoint_from_arn(arn, endpoint):
+    assert endpoint == endpoint_from_arn(arn)
