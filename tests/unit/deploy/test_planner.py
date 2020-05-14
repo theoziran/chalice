@@ -567,7 +567,7 @@ class TestPlanWebsocketAPI(BasePlannerTests):
     def assert_loads_needed_variables(self, plan):
         # Parse arn and store region/account id for future
         # API calls.
-        assert plan[0:4] == [
+        assert plan[0:5] == [
             models.BuiltinFunction(
                 'parse_arn', [Variable('function_name_connect_lambda_arn')],
                 output_var='parsed_lambda_arn',
@@ -581,6 +581,9 @@ class TestPlanWebsocketAPI(BasePlannerTests):
             models.JPSearch('partition',
                             input_var='parsed_lambda_arn',
                             output_var='partition'),
+            models.JPSearch('dns_suffix',
+                            input_var='parsed_lambda_arn',
+                            output_var='dns_suffix'),
         ]
 
     def test_can_plan_websocket_api(self):
@@ -601,7 +604,7 @@ class TestPlanWebsocketAPI(BasePlannerTests):
         )
         plan = self.determine_plan(websocket_api)
         self.assert_loads_needed_variables(plan)
-        assert plan[4:] == [
+        assert plan[5:] == [
             models.APICall(
                 method_name='create_websocket_api',
                 params={'name': 'app-dev-websocket-api'},
@@ -714,8 +717,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket_api_url',
                 value=StringFormat(
                     'wss://{websocket_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/%s/' % 'api',
-                    ['websocket_api_id', 'region_name'],
+                    '.{dns_suffix}/%s/' % 'api',
+                    ['websocket_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(
@@ -776,7 +779,7 @@ class TestPlanWebsocketAPI(BasePlannerTests):
         }
         plan = self.determine_plan(websocket_api)
         self.assert_loads_needed_variables(plan)
-        assert plan[4:] == [
+        assert plan[5:] == [
             models.StoreValue(
                 name='websocket_api_id',
                 value='my_websocket_api_id',
@@ -889,8 +892,8 @@ class TestPlanWebsocketAPI(BasePlannerTests):
                 name='websocket_api_url',
                 value=StringFormat(
                     'wss://{websocket_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/%s/' % 'api',
-                    ['websocket_api_id', 'region_name'],
+                    '.{dns_suffix}/%s/' % 'api',
+                    ['websocket_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(
@@ -935,7 +938,7 @@ class TestPlanRestAPI(BasePlannerTests):
     def assert_loads_needed_variables(self, plan):
         # Parse arn and store region/account id for future
         # API calls.
-        assert plan[0:5] == [
+        assert plan[0:6] == [
             models.BuiltinFunction(
                 'parse_arn', [Variable('function_name_lambda_arn')],
                 output_var='parsed_lambda_arn',
@@ -949,6 +952,9 @@ class TestPlanRestAPI(BasePlannerTests):
             models.JPSearch('partition',
                             input_var='parsed_lambda_arn',
                             output_var='partition'),
+            models.JPSearch('dns_suffix',
+                            input_var='parsed_lambda_arn',
+                            output_var='dns_suffix'),
             # Verify we copy the function arn as needed.
             models.CopyVariable(
                 from_var='function_name_lambda_arn',
@@ -968,7 +974,7 @@ class TestPlanRestAPI(BasePlannerTests):
         plan = self.determine_plan(rest_api)
         self.assert_loads_needed_variables(plan)
 
-        assert plan[5:] == [
+        assert plan[6:] == [
             models.APICall(
                 method_name='import_rest_api',
                 params={'swagger_document': {'swagger': '2.0'},
@@ -1008,8 +1014,8 @@ class TestPlanRestAPI(BasePlannerTests):
                 name='rest_api_url',
                 value=StringFormat(
                     'https://{rest_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/api/',
-                    ['rest_api_id', 'region_name'],
+                    '.{dns_suffix}/api/',
+                    ['rest_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(
@@ -1040,7 +1046,7 @@ class TestPlanRestAPI(BasePlannerTests):
         }
         plan = self.determine_plan(rest_api)
 
-        assert plan[9].params == {
+        assert plan[10].params == {
             'patch_operations': [
                 {'op': 'replace',
                  'path': '/minimumCompressionSize',
@@ -1072,7 +1078,7 @@ class TestPlanRestAPI(BasePlannerTests):
         plan = self.determine_plan(rest_api)
         self.assert_loads_needed_variables(plan)
 
-        assert plan[5:] == [
+        assert plan[6:] == [
             models.StoreValue(name='rest_api_id', value='my_rest_api_id'),
             models.RecordResourceVariable(
                 resource_type='rest_api',
@@ -1125,8 +1131,8 @@ class TestPlanRestAPI(BasePlannerTests):
                 name='rest_api_url',
                 value=StringFormat(
                     'https://{rest_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/api/',
-                    ['rest_api_id', 'region_name'],
+                    '.{dns_suffix}/api/',
+                    ['rest_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(

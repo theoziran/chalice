@@ -193,7 +193,8 @@ class TestExecutor(object):
             'partition': 'aws',
             'account_id': '123',
             'region': 'us-west-2',
-            'service': 'lambda'
+            'service': 'lambda',
+            'dns_suffix': 'amazonaws.com'
         }
 
     def test_errors_out_on_unknown_function(self):
