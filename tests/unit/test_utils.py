@@ -12,7 +12,8 @@ from hypothesis.strategies import text
 from six import StringIO
 
 from chalice import utils
-from chalice.utils import resolve_endpoint, endpoint_from_arn
+from chalice.utils import resolve_endpoint, endpoint_from_arn, \
+    endpoint_dns_suffix, endpoint_dns_suffix_from_arn
 
 
 class TestUI(object):
@@ -176,3 +177,21 @@ def test_resolve_endpoint(service, region, endpoint):
 ])
 def test_endpoint_from_arn(arn, endpoint):
     assert endpoint == endpoint_from_arn(arn)
+
+
+@pytest.mark.parametrize('service,region,dns_suffix', [
+    ('sns', 'us-east-1', 'amazonaws.com'),
+    ('sns', 'cn-north-1', 'amazonaws.com'),
+    ('dynamodb', 'mars-west-1', 'amazonaws.com')
+])
+def test_endpoint_dns_suffix(service, region, dns_suffix):
+    assert dns_suffix == endpoint_dns_suffix(service, region)
+
+
+@pytest.mark.parametrize('arn,dns_suffix', [
+    ('arn:aws:sns:us-east-1:123456:MyTopic', 'amazonaws.com'),
+    ('arn:aws-cn:sqs:cn-north-1:444455556666:queue1', 'amazonaws.com.cn'),
+    ('arn:aws:dynamodb:mars-west-1:123456:table/MyTable', 'amazonaws.com')
+])
+def test_endpoint_dns_suffix(arn, dns_suffix):
+    assert dns_suffix == endpoint_dns_suffix_from_arn(arn)
