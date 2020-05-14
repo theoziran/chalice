@@ -717,6 +717,9 @@ class PlanStage(object):
             models.JPSearch('partition',
                             input_var='parsed_lambda_arn',
                             output_var='partition'),
+            models.JPSearch('dns_suffix',
+                            input_var='parsed_lambda_arn',
+                            output_var='dns_suffix'),
         ]  # type: List[InstructionMsg]
 
         # There's also a set of instructions that are needed
@@ -727,8 +730,8 @@ class PlanStage(object):
                 name='websocket_api_url',
                 value=StringFormat(
                     'wss://{websocket_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/%s/' % resource.api_gateway_stage,
-                    ['websocket_api_id', 'region_name'],
+                    '.{dns_suffix}/%s/' % resource.api_gateway_stage,
+                    ['websocket_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(
@@ -863,6 +866,9 @@ class PlanStage(object):
             models.JPSearch('partition',
                             input_var='parsed_lambda_arn',
                             output_var='partition'),
+            models.JPSearch('dns_suffix',
+                            input_var='parsed_lambda_arn',
+                            output_var='dns_suffix'),
             # The swagger doc uses the 'api_handler_lambda_arn'
             # var name so we need to make sure we populate this variable
             # before importing the rest API.
@@ -902,8 +908,8 @@ class PlanStage(object):
                 name='rest_api_url',
                 value=StringFormat(
                     'https://{rest_api_id}.execute-api.{region_name}'
-                    '.amazonaws.com/%s/' % resource.api_gateway_stage,
-                    ['rest_api_id', 'region_name'],
+                    '.{dns_suffix}/%s/' % resource.api_gateway_stage,
+                    ['rest_api_id', 'region_name', 'dns_suffix'],
                 ),
             ),
             models.RecordResourceVariable(

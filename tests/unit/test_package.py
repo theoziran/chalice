@@ -398,7 +398,7 @@ class TestTerraformTemplate(TemplateTestBase):
         assert list(resources['aws_lambda_permission'].values())[0] == {
             'function_name': 'sample_app-dev',
             'action': 'lambda:InvokeFunction',
-            'principal': 'apigateway.amazonaws.com',
+            'principal': 'apigateway.${data.aws_partition.chalice.dns_suffix}',
             'source_arn': (
                 '${aws_api_gateway_rest_api.rest_api.execution_arn}/*')
         }
@@ -443,7 +443,7 @@ class TestTerraformTemplate(TemplateTestBase):
         assert resources['aws_lambda_permission']['myauth_invoke'] == {
             'action': 'lambda:InvokeFunction',
             'function_name': 'sample_app-dev-myauth',
-            'principal': 'apigateway.amazonaws.com',
+            'principal': 'apigateway.${data.aws_partition.chalice.dns_suffix}',
             'source_arn': (
                 '${aws_api_gateway_rest_api.rest_api.execution_arn}/*')
         }
@@ -524,7 +524,7 @@ class TestTerraformTemplate(TemplateTestBase):
             'handler-s3event'] == {
                 'action': 'lambda:InvokeFunction',
                 'function_name': 'sample_app-dev-handler',
-                'principal': 's3.amazonaws.com',
+                'principal': 's3.${data.aws_partition.chalice.dns_suffix}',
                 'source_arn': 'arn:*:s3:::foo',
                 'statement_id': 'handler-s3event'
         }
@@ -585,7 +585,7 @@ class TestTerraformTemplate(TemplateTestBase):
             'handler-sns-subscription'] == {
                 'function_name': 'sample_app-dev-handler',
                 'action': 'lambda:InvokeFunction',
-                'principal': 'sns.amazonaws.com',
+                'principal': 'sns.${data.aws_partition.chalice.dns_suffix}',
                 'source_arn': 'arn:aws:sns:space-leo-1:1234567890:foo'
         }
 
@@ -853,7 +853,7 @@ class TestSAMTemplate(TemplateTestBase):
             'Properties': {
                 'Action': 'lambda:InvokeFunction',
                 'FunctionName': {'Ref': 'APIHandler'},
-                'Principal': 'apigateway.amazonaws.com',
+                'Principal': {'Fn::Sub': 'apigateway.${AWS::URLSuffix}'},
                 'SourceArn': {
                     'Fn::Sub': [
                         ('arn:${AWS::Partition}:execute-api:${AWS::Region}'
@@ -871,7 +871,7 @@ class TestSAMTemplate(TemplateTestBase):
             'Properties': {
                 'Action': 'lambda:InvokeFunction',
                 'FunctionName': {'Fn::GetAtt': ['Myauth', 'Arn']},
-                'Principal': 'apigateway.amazonaws.com',
+                'Principal': {'Fn::Sub': 'apigateway.${AWS::URLSuffix}'},
                 'SourceArn': {
                     'Fn::Sub': [
                         ('arn:${AWS::Partition}:execute-api:${AWS::Region}'
@@ -891,7 +891,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Value': {
                     'Fn::Sub': (
                         'https://${RestAPI}.execute-api.'
-                        '${AWS::Region}.amazonaws.com/api/'
+                        '${AWS::Region}.${AWS::URLSuffix}/api/'
                     )
                 }
             },
@@ -943,7 +943,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Properties': {
                     'Action': 'lambda:InvokeFunction',
                     'FunctionName': {'Ref': handler},
-                    'Principal': 'apigateway.amazonaws.com',
+                    'Principal': {'Fn::Sub': 'apigateway.${AWS::URLSuffix}'},
                     'SourceArn': {
                         'Fn::Sub': [
                             (
@@ -1055,7 +1055,7 @@ class TestSAMTemplate(TemplateTestBase):
                 'Value': {
                     'Fn::Sub': (
                         'wss://${WebsocketAPI}.execute-api.'
-                        '${AWS::Region}.amazonaws.com/api/'
+                        '${AWS::Region}.${AWS::URLSuffix}/api/'
                     )
                 }
             },

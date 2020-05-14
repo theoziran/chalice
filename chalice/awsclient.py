@@ -34,7 +34,7 @@ from typing import Any, Optional, Dict, Callable, List, Iterator, IO  # noqa
 
 from chalice.constants import DEFAULT_STAGE_NAME
 from chalice.constants import MAX_LAMBDA_DEPLOYMENT_SIZE
-
+from chalice.utils import endpoint_dns_suffix, endpoint_dns_suffix_from_arn
 
 StrMap = Optional[Dict[str, str]]
 OptStr = Optional[str]
@@ -740,13 +740,14 @@ class TypedAWSClient(object):
         source_arn = ("arn:%s:execute-api:%s:%s:%s/authorizers/%s" %
                       (partition, region_name, account_id, rest_api_id,
                        authorizer_id))
+        dns_suffix = endpoint_dns_suffix('apigateway', region_name)
         if random_id is None:
             random_id = self._random_id()
         self._client('lambda').add_permission(
             Action='lambda:InvokeFunction',
             FunctionName=function_name,
             StatementId=random_id,
-            Principal='apigateway.amazonaws.com',
+            Principal='apigateway.%s' % dns_suffix,
             SourceArn=source_arn,
         )
 
@@ -904,11 +905,12 @@ class TypedAWSClient(object):
         if self._policy_gives_access(policy, source_arn, service_name):
             return
         random_id = self._random_id()
+        dns_suffix = endpoint_dns_suffix_from_arn(function_arn)
         self._client('lambda').add_permission(
             Action='lambda:InvokeFunction',
             FunctionName=function_arn,
             StatementId=random_id,
-            Principal='%s.amazonaws.com' % service_name,
+            Principal='%s.%s' % (service_name, dns_suffix),
             SourceArn=source_arn,
         )
 
@@ -945,13 +947,14 @@ class TypedAWSClient(object):
 
     def _statement_gives_arn_access(self, statement, source_arn, service_name):
         # type: (Dict[str, Any], str, str) -> bool
+        dns_suffix = endpoint_dns_suffix_from_arn(source_arn)
         if not statement['Action'] == 'lambda:InvokeFunction':
             return False
         if statement.get('Condition', {}).get(
                 'ArnLike', {}).get('AWS:SourceArn', '') != source_arn:
             return False
         if statement.get('Principal', {}).get('Service', '') != \
-                '%s.amazonaws.com' % service_name:
+                '%s.%s' % (service_name, dns_suffix):
             return False
         # We're not checking the "Resource" key because we're assuming
         # that lambda.get_policy() is returning the policy for the particular
@@ -1090,7 +1093,7 @@ class TypedAWSClient(object):
         )['IntegrationId']
 
     def create_websocket_route(self, api_id, route_key, integration_id):
-        # type: (str, str, str, ) -> None
+        # type: (str, str, str) -> None
         client = self._client('apigatewayv2')
         client.create_route(
             ApiId=api_id,

@@ -8,7 +8,7 @@ from typing import Dict, List, Any  # noqa
 from chalice.deploy import models
 from chalice.deploy.planner import Variable, StringFormat
 from chalice.awsclient import TypedAWSClient  # noqa
-from chalice.utils import UI  # noqa
+from chalice.utils import UI, endpoint_dns_suffix  # noqa
 
 
 class BaseExecutor(object):
@@ -118,6 +118,7 @@ class Executor(BaseExecutor):
                 'service': parts[2],
                 'region': parts[3],
                 'account_id': parts[4],
+                'dns_suffix': endpoint_dns_suffix(parts[2], parts[3])
             }
             self.variables[instruction.output_var] = result
         else:
