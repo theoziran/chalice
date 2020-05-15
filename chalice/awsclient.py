@@ -905,7 +905,7 @@ class TypedAWSClient(object):
         if self._policy_gives_access(policy, source_arn, service_name):
             return
         random_id = self._random_id()
-        dns_suffix = endpoint_dns_suffix_from_arn(function_arn)
+        dns_suffix = endpoint_dns_suffix_from_arn(source_arn)
         self._client('lambda').add_permission(
             Action='lambda:InvokeFunction',
             FunctionName=function_arn,

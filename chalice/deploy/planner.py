@@ -2,15 +2,13 @@
 import json
 import re
 from collections import OrderedDict
-
 from typing import List, Dict, Any, Optional, Union, Tuple, Set, cast  # noqa
 from typing import Sequence  # noqa
 
-from chalice.config import Config, DeployedResources  # noqa
-from chalice.utils import OSUtils  # noqa
-from chalice.deploy import models
 from chalice.awsclient import TypedAWSClient, ResourceDoesNotExistError  # noqa
-
+from chalice.config import Config, DeployedResources  # noqa
+from chalice.deploy import models
+from chalice.utils import OSUtils  # noqa
 
 InstructionMsg = Union[models.Instruction, Tuple[models.Instruction, str]]
 MarkedResource = Dict[str, List[models.RecordResource]]
@@ -143,8 +141,8 @@ class PlanStage(object):
         return models.Plan(plan, messages)
 
     def _add_result_to_plan(self,
-                            result,    # type: Sequence[InstructionMsg]
-                            plan,      # type: List[models.Instruction]
+                            result,  # type: Sequence[InstructionMsg]
+                            plan,  # type: List[models.Instruction]
                             messages,  # type: Dict[int, str]
                             ):
         # type: (...) -> None
@@ -268,13 +266,36 @@ class PlanStage(object):
         if not role_exists:
             return [
                 # TODO: Discover Region, Partition and URLSuffix
-                # BultInFunction
-                # JPSearch
-                # StoreValue
+                models.BuiltinFunction(
+                    'interrogate_profile',
+                    [],
+                    output_var='interrogated_profile',
+                ),
+                models.JPSearch('dns_suffix',
+                                input_var='interrogated_profile',
+                                output_var='dns_suffix'),
+                models.StoreValue(
+                    name='lambda_principal',
+                    value=StringFormat('lambda.{dns_suffix}', ['dns_suffix']),
+                ),
+                models.StoreValue(
+                    name='lambda_trust_policy',
+                    value={
+                        "Version": "2012-10-17",
+                        "Statement": [{
+                            "Sid": "",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": Variable('lambda_principal')
+                            },
+                            "Action": "sts:AssumeRole"
+                        }]
+                    },
+                ),
                 (models.APICall(
                     method_name='create_role',
                     params={'name': resource.role_name,
-                            'trust_policy': resource.trust_policy, # TODO: use Variable(
+                            'trust_policy': Variable('lambda_trust_policy'),
                             'policy': document},
                     output_var=varname,
                 ), "Creating IAM role: %s\n" % resource.role_name),

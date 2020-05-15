@@ -11,8 +11,8 @@ import tarfile
 import subprocess
 
 
-import click
 from collections import OrderedDict # noqa
+import click
 from typing import IO, Dict, List, Any, Tuple, Iterator, BinaryIO, Text  # noqa
 from typing import Optional, Union  # noqa
 from typing import MutableMapping  # noqa
@@ -103,7 +103,7 @@ def serialize_to_json(data):
 
 def create_resolver():
     # type: () -> EndpointResolver
-    """Establish an EndpointResolver via botocore standards
+    """Establish an EndpointResolver via botocore standards.
 
     This allows the dns suffix for the different regions and partitions to be
     discovered throughout the chalice microframework
@@ -116,7 +116,7 @@ def create_resolver():
 
 def resolve_endpoint(service, region):
     # type: (str, str) -> Union[OrderedDict[str, Any], None]
-    """Find details of an endpoint based on the service and region
+    """Find details of an endpoint based on the service and region.
 
     This utilizes the botocore EndpointResolver in order to find details on
     the given service and region combination.  If the service and region
@@ -128,7 +128,7 @@ def resolve_endpoint(service, region):
 
 def endpoint_from_arn(arn):
     # type: (str) -> Union[OrderedDict[str, Any], None]
-    """Find details for the endpoint associated with a resource ARN
+    """Find details for the endpoint associated with a resource ARN.
 
     This allows the an endpoint to be discerned based on an ARN.  This
     is a convenience method due to the need to parse multiple ARNs
@@ -142,7 +142,7 @@ def endpoint_from_arn(arn):
 
 def endpoint_dns_suffix(service, region):
     # type: (str, str) -> str
-    """Discover the dns suffix for a given service and region combination
+    """Discover the dns suffix for a given service and region combination.
 
     This allows the service DNS suffix to be discoverable throughout the
     framework.  If the ARN's service and region combination is not found
@@ -155,7 +155,7 @@ def endpoint_dns_suffix(service, region):
 
 def endpoint_dns_suffix_from_arn(arn):
     # type: (str) -> str
-    """Discover the dns suffix for a given ARN
+    """Discover the dns suffix for a given ARN.
 
     This allows the service DNS suffix to be discoverable throughout the
     framework based on the ARN.  If the ARN's service and region

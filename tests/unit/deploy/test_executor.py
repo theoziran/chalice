@@ -197,6 +197,22 @@ class TestExecutor(object):
             'dns_suffix': 'amazonaws.com'
         }
 
+    def test_built_in_function_interrogate_profile(self):
+        self.mock_client.region_name = 'us-west-2'
+        self.mock_client.partition_name = 'aws'
+        self.execute([
+            BuiltinFunction(
+                function_name='interrogate_profile',
+                args=[],
+                output_var='result',
+            )
+        ])
+        assert self.executor.variables['result'] == {
+            'partition': 'aws',
+            'region': 'us-west-2',
+            'dns_suffix': 'amazonaws.com'
+        }
+
     def test_errors_out_on_unknown_function(self):
         with pytest.raises(ValueError):
             self.execute([

@@ -1821,14 +1821,15 @@ def test_add_permission_for_scheduled_event(stubbed_session):
         FunctionName='function-arn',
         StatementId=stub.ANY,
         Principal='events.amazonaws.com',
-        SourceArn='rule-arn'
+        SourceArn='arn:aws:events:us-east-1:123456789012:rule/MyScheduledRule'
     ).returns({})
 
     stubbed_session.activate_stubs()
 
     awsclient = TypedAWSClient(stubbed_session)
     awsclient.add_permission_for_cloudwatch_event(
-        'rule-arn', 'function-arn')
+        'arn:aws:events:us-east-1:123456789012:rule/MyScheduledRule',
+        'function-arn')
 
     stubbed_session.verify_stubs()
 
@@ -1841,7 +1842,8 @@ def test_skip_if_permission_already_granted(stubbed_session):
             {'Action': 'lambda:InvokeFunction',
                 'Condition': {
                     'ArnLike': {
-                        'AWS:SourceArn': 'rule-arn',
+                        'AWS:SourceArn': 'arn:aws:events:us-east-1'
+                                         ':123456789012:rule/MyScheduledRule',
                     }
                 },
                 'Effect': 'Allow',
@@ -1857,7 +1859,8 @@ def test_skip_if_permission_already_granted(stubbed_session):
     stubbed_session.activate_stubs()
     awsclient = TypedAWSClient(stubbed_session)
     awsclient.add_permission_for_cloudwatch_event(
-        'rule-arn', 'function-arn')
+        'arn:aws:events:us-east-1:123456789012:rule/MyScheduledRule',
+        'function-arn')
     stubbed_session.verify_stubs()
 
 
@@ -2106,13 +2109,13 @@ def test_add_permission_for_sns_publish(stubbed_session):
         FunctionName='function-arn',
         StatementId=stub.ANY,
         Principal='sns.amazonaws.com',
-        SourceArn='arn:aws:sns:::topic-arn',
+        SourceArn='arn:aws:sns:us-west-2:12345:my-demo-topic',
     ).returns({})
 
     stubbed_session.activate_stubs()
     awsclient = TypedAWSClient(stubbed_session)
     awsclient.add_permission_for_sns_topic(
-        'arn:aws:sns:::topic-arn', 'function-arn')
+        'arn:aws:sns:us-west-2:12345:my-demo-topic', 'function-arn')
     stubbed_session.verify_stubs()
 
 
@@ -2199,7 +2202,7 @@ def test_subscription_not_exists(stubbed_session):
 
 
 def test_can_remove_lambda_sns_permission(stubbed_session):
-    topic_arn = 'arn:sns:topic'
+    topic_arn = 'arn:aws:sns:us-west-2:12345:my-demo-topic'
     policy = {
         'Id': 'default',
         'Statement': [create_policy_statement(topic_arn,

@@ -1082,7 +1082,7 @@ class TestSAMTemplate(TemplateTestBase):
                            'Effect': 'Allow',
                            'Principal': {
                                'Service': {'Fn::Sub':
-                                               'lambda.${AWS::URLSuffix}'}},
+                                           'lambda.${AWS::URLSuffix}'}},
                            'Sid': ''}],
             'Version': '2012-10-17'}
 

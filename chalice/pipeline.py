@@ -307,7 +307,8 @@ class CodePipeline(BaseResource):
                             "Effect": "Allow",
                             "Principal": {
                                 "Service": [
-                                    {'Fn::Sub': 'cloudformation.${AWS::URLSuffix}'}
+                                    {'Fn::Sub':
+                                     'cloudformation.${AWS::URLSuffix}'}
                                 ]
                             }
                         }
