@@ -193,5 +193,5 @@ def test_endpoint_dns_suffix(service, region, dns_suffix):
     ('arn:aws-cn:sqs:cn-north-1:444455556666:queue1', 'amazonaws.com.cn'),
     ('arn:aws:dynamodb:mars-west-1:123456:table/MyTable', 'amazonaws.com')
 ])
-def test_endpoint_dns_suffix(arn, dns_suffix):
+def test_endpoint_dns_suffix_from_arn(arn, dns_suffix):
     assert dns_suffix == endpoint_dns_suffix_from_arn(arn)

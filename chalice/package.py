@@ -789,7 +789,8 @@ class TerraformGenerator(TemplateGenerator):
                 resource.resource_name] = {
                     'function_name': resource.lambda_function.function_name,
                     'action': 'lambda:InvokeFunction',
-                    'principal': 'events.${data.aws_partition.chalice.dns_suffix}',
+                    'principal':
+                        'events.${data.aws_partition.chalice.dns_suffix}',
                     'source_arn': "${aws_cloudwatch_event_rule.%s.arn}" % (
                         resource.resource_name)
         }
@@ -887,7 +888,8 @@ class TerraformGenerator(TemplateGenerator):
             resource.resource_name + '_invoke'] = {
                 'function_name': resource.lambda_function.function_name,
                 'action': 'lambda:InvokeFunction',
-                'principal': 'apigateway.${data.aws_partition.chalice.dns_suffix}',
+                'principal':
+                    'apigateway.${data.aws_partition.chalice.dns_suffix}',
                 'source_arn':
                     "${aws_api_gateway_rest_api.%s.execution_arn}/*" % (
                         resource.resource_name)
@@ -904,7 +906,8 @@ class TerraformGenerator(TemplateGenerator):
                 auth.resource_name + '_invoke'] = {
                     'function_name': auth.function_name,
                     'action': 'lambda:InvokeFunction',
-                    'principal': 'apigateway.${data.aws_partition.chalice.dns_suffix}',
+                    'principal':
+                        'apigateway.${data.aws_partition.chalice.dns_suffix}',
                     'source_arn': (
                         "${aws_api_gateway_rest_api.%s.execution_arn}" % (
                             resource.resource_name) + "/*")

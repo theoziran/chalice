@@ -121,6 +121,14 @@ class Executor(BaseExecutor):
                 'dns_suffix': endpoint_dns_suffix(parts[2], parts[3])
             }
             self.variables[instruction.output_var] = result
+        elif instruction.function_name == 'interrogate_profile':
+            region = self._client.region_name
+            result = {
+                'partition': self._client.partition_name,
+                'region': region,
+                'dns_suffix': endpoint_dns_suffix('apigateway', region)
+            }
+            self.variables[instruction.output_var] = result
         else:
             raise ValueError("Unknown builtin function: %s"
                              % instruction.function_name)

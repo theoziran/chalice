@@ -127,10 +127,10 @@ class TestPlanManagedRole(BasePlannerTests):
         expected = models.APICall(
             method_name='create_role',
             params={'name': 'myrole',
-                    'trust_policy': {'trust': 'policy'},
+                    'trust_policy': Variable('lambda_trust_policy'),
                     'policy': {'iam': 'policy'}},
         )
-        self.assert_apicall_equals(plan[0], expected)
+        self.assert_apicall_equals(plan[4], expected)
         assert list(self.last_plan.messages.values()) == [
             'Creating IAM role: myrole\n'
         ]
@@ -148,10 +148,10 @@ class TestPlanManagedRole(BasePlannerTests):
         expected = models.APICall(
             method_name='create_role',
             params={'name': 'myrole',
-                    'trust_policy': {'trust': 'policy'},
+                    'trust_policy': Variable('lambda_trust_policy'),
                     'policy': {'iam': 'policy'}},
         )
-        self.assert_apicall_equals(plan[0], expected)
+        self.assert_apicall_equals(plan[4], expected)
         assert list(self.last_plan.messages.values()) == [
             'Creating IAM role: myrole\n'
         ]
