@@ -181,7 +181,7 @@ def test_endpoint_from_arn(arn, endpoint):
 
 @pytest.mark.parametrize('service,region,dns_suffix', [
     ('sns', 'us-east-1', 'amazonaws.com'),
-    ('sns', 'cn-north-1', 'amazonaws.com'),
+    ('sns', 'cn-north-1', 'amazonaws.com.cn'),
     ('dynamodb', 'mars-west-1', 'amazonaws.com')
 ])
 def test_endpoint_dns_suffix(service, region, dns_suffix):
