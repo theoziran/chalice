@@ -41,6 +41,7 @@ def validate_configuration(config):
     validate_routes(routes)
     validate_route_content_types(routes, config.chalice_app.api.binary_types)
     validate_minimum_compression_size(config)
+    validate_provisioned_concurrency(config)
     _validate_manage_iam_role(config)
     validate_python_version(config)
     validate_unique_function_names(config)
@@ -195,6 +196,13 @@ def validate_minimum_compression_size(config):
         raise ValueError("'minimum_compression_size' must be equal to or "
                          "greater than %s and less than or equal to %s."
                          % (MIN_COMPRESSION_SIZE, MAX_COMPRESSION_SIZE))
+
+def validate_provisioned_concurrency(config):
+    # type: (Config) -> None
+    if config.provisioned_concurrency is None:
+        return
+    if not isinstance(config.provisioned_concurrency, int):
+        raise ValueError("'provisioned_concurrency' must be an int.")
 
 
 def _validate_manage_iam_role(config):

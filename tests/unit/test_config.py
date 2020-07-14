@@ -377,6 +377,40 @@ def test_can_load_python_version():
         expected_runtime = 'python3.8'
     assert c.lambda_python_version == expected_runtime
 
+class TestProvisionedConcurrency(object):
+    def test_not_set(self):
+        c = Config('dev', config_from_disk={})
+        assert c.provisioned_concurrency is None
+
+    def test_set_provisioned_concurrency_global(self):
+        config_from_disk = {
+            'provisioned_concurrency': 1
+        }
+        c = Config('dev', config_from_disk=config_from_disk)
+        assert c.provisioned_concurrency == 1
+
+    def test_set_provisioned_concurrency_stage(self):
+        config_from_disk = {
+            'stages': {
+                'dev': {
+                    'provisioned_concurrency': 1
+                }
+            }
+        }
+        c = Config('dev', config_from_disk=config_from_disk)
+        assert c.provisioned_concurrency == 1
+
+    def test_set_provisioned_concurrency_override(self):
+        config_from_disk = {
+            'provisioned_concurrency': 1,
+            'stages': {
+                'dev': {
+                    'provisioned_concurrency': 2
+                }
+            }
+        }
+        c = Config('dev', config_from_disk=config_from_disk)
+        assert c.provisioned_concurrency == 2
 
 class TestConfigureMinimumCompressionSize(object):
     def test_not_set(self):

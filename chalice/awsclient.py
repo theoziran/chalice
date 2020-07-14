@@ -61,7 +61,6 @@ LogEventsResponse = TypedDict(
     }, total=False
 )
 
-
 _REMOTE_CALL_ERRORS = (
     botocore.exceptions.ClientError, RequestsConnectionError
 )
@@ -95,9 +94,9 @@ class DeploymentPackageTooLargeError(LambdaClientError):
 
 class LambdaErrorContext(object):
     def __init__(self,
-                 function_name,       # type: str
+                 function_name,  # type: str
                  client_method_name,  # type: str
-                 deployment_size,     # type: int
+                 deployment_size,  # type: int
                  ):
         # type: (...) -> None
         self.function_name = function_name
@@ -106,7 +105,6 @@ class LambdaErrorContext(object):
 
 
 class TypedAWSClient(object):
-
     # 30 * 5 == 150 seconds or 2.5 minutes for the initial lambda
     # creation + role propagation.
     LAMBDA_CREATE_ATTEMPTS = 30
@@ -159,6 +157,7 @@ class TypedAWSClient(object):
                         tags=None,                   # type: StrMap
                         timeout=None,                # type: OptInt
                         memory_size=None,            # type: OptInt
+                        provisioned_concurrency=None,  # type: OptInt
                         security_group_ids=None,     # type: OptStrList
                         subnet_ids=None,             # type: OptStrList
                         layers=None,                 # type: OptStrList
@@ -186,6 +185,12 @@ class TypedAWSClient(object):
             )
         if layers is not None:
             kwargs['Layers'] = layers
+        if provisioned_concurrency is not None:
+            kwargs['Version'] = {
+                "ProvisionedConcurrencyConfig": {
+                    "ProvisionedConcurrentExecutions": provisioned_concurrency
+                }
+            }
         return self._create_lambda_function(kwargs)
 
     def _create_lambda_function(self, api_args):

@@ -339,6 +339,13 @@ class Config(object):
         return self._chain_lookup('reserved_concurrency',
                                   varies_per_chalice_stage=True,
                                   varies_per_function=True)
+    @property
+    def provisioned_concurrency(self):
+        # type: () -> int
+        return self._chain_lookup('provisioned_concurrency',
+                                  varies_per_chalice_stage=True,
+                                  varies_per_function=True)
+
 
     def scope(self, chalice_stage, function_name):
         # type: (str, str) -> Config
